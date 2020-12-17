@@ -1,0 +1,10 @@
+apiVersion: is.github.com/v1alpha1
+kind: Sharedmemory
+metadata:
+  name: sharedmemory-sample
+spec:
+  # Add fields here
+  foo: bar
+  topicname: ddoood
+  shmsize: 10
+  msgsize: 10

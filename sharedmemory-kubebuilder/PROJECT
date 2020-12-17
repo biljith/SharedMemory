@@ -1,0 +1,7 @@
+domain: github.com
+repo: sharedmemory-kubebuilder
+resources:
+- group: is
+  kind: Sharedmemory
+  version: v1alpha1
+version: "2"

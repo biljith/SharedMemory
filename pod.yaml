@@ -1,0 +1,43 @@
+---
+apiVersion: v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Pod
+metadata:
+  name: shimmy
+  labels:
+    name: shimmy
+spec:
+  containers:
+  - name: broker
+    image: kubernetes/broker
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 5000
+  hostIPC: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker-service
+spec:
+  type: NodePort
+  selector:
+    name: shimmy
+  ports:
+    - port: 6969
+      targetPort: 5000
+---
+apiVersion: v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Pod
+metadata:
+  name: pubsub
+  labels:
+    name: pubsub
+spec:
+  containers:
+  - name: writer
+    image: kubernetes/writer
+    imagePullPolicy: Never
+  - name: reader
+    image: kubernetes/reader
+    imagePullPolicy: Never
+  hostIPC: true
