@@ -1,4 +1,6 @@
 # About
+The goal of this project was to augment the work done for the research project [Shimmy](https://www.usenix.org/system/files/hotedge19-paper-abranches.pdf) by adding the feature to be able to specify creation of shared memory as a native Kubernetes object, i.e. using yaml files. This project accomplished that by using [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and Custom Controllers. The Custom Controller was built using [kubebuilder](https://book.kubebuilder.io/).
+
 ## Current Flow
 When a user creates a shared memory object (for eg. using kubectl apply -f example-sharedmemory.yml) the controller gets notified. The controller in turn contacts each broker service (currently only one but in the future one per host) to create
 the shared memory on the host it resides on. The broker service exposes an endpoint /createTopic for this purpose. Once the shared memory is created, the publisher can get info about the topic (shared memory id) using the /getTopic endpoint and write to the shared memory. Subscribers can subscribe to the topic using /substopic endpoint and start reading from the shared memory. The responsibility of maintaining the offset in the shared memory resides on the subscribers. All the publisher and subscriber pods need to set hostIPC to true to be able to use shared memory.
@@ -12,6 +14,9 @@ all of which are self explanatory. See sharedmemory-kubebuilder/config/samples/i
 
 ## Future work.
 The current status is that shared memory works with kubernetes as long as there is a single host. To support multiple hosts, we need multiple broker services one on each host. The shared memories on these hosts should be synced by using [RDMA](https://github.com/goodarzysepideh/RDMA). Other issue that needs to be tackled is how to schedule the creation of publishers and subscriber pods so they mostly reside on the same host to avoid using RDMA.
+
+## Resources
+1. https://learning.oreilly.com/library/view/programming-kubernetes/9781492047094/
 
 # Setup
 ## Create redis pod
@@ -60,9 +65,9 @@ kubectl apply -f config/samples/is_v1alpha1_sharedmemory.yaml
 4. kubectl apply -f pod.yaml
 
 
-# Other helpful commands
+## Other helpful commands
 ## Change default namespace
-kubectl config set-context --current --namespace=<insert-namespace-name-here>
+1. kubectl config set-context --current --namespace=<insert-namespace-name-here>
 
 ## Run an alpine container
 kubectl run -it --rm --restart=Never alpine --image=alpine sh
