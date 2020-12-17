@@ -1,3 +1,18 @@
+# About
+## Current Flow
+When a user creates a shared memory object (for eg. using kubectl apply -f example-sharedmemory.yml) the controller gets notified. The controller in turn contacts each broker service (currently only one but in the future one per host) to create
+the shared memory on the host it resides on. The broker service exposes an endpoint /createTopic for this purpose. Once the shared memory is created, the publisher can get info about the topic (shared memory id) using the /getTopic endpoint and write to the shared memory. Subscribers can subscribe to the topic using /substopic endpoint and start reading from the shared memory. The responsibility of maintaining the offset in the shared memory resides on the subscribers. All the publisher and subscriber pods need to set hostIPC to true to be able to use shared memory.
+
+## Shared Memory object
+The shared memory json should have 3 fields
+- topicname
+- shmsize 
+- msgsize
+all of which are self explanatory. See sharedmemory-kubebuilder/config/samples/is_v1alpha1_sharedmemory.yaml for an example
+
+## Future work.
+The current status is that shared memory works with kubernetes as long as there is a single host. To support multiple hosts, we need multiple broker services one on each host. The shared memories on these hosts should be synced by using [RDMA](https://github.com/goodarzysepideh/RDMA). Other issue that needs to be tackled is how to schedule the creation of publishers and subscriber pods so they mostly reside on the same host to avoid using RDMA.
+
 # Setup
 ## Create redis pod
 kubectl apply -f redis-master.yml
