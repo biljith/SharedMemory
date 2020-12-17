@@ -45,9 +45,9 @@ kubectl apply -f config/samples/is_v1alpha1_sharedmemory.yaml
 4. kubectl apply -f pod.yaml
 
 
-## Other helpful commands
+# Other helpful commands
 ## Change default namespace
-1. kubectl config set-context --current --namespace=<insert-namespace-name-here>
+kubectl config set-context --current --namespace=<insert-namespace-name-here>
 
 ## Run an alpine container
 kubectl run -it --rm --restart=Never alpine --image=alpine sh
